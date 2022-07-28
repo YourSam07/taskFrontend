@@ -23,7 +23,8 @@ module.exports = {
       'ph': '#B7C0C9',
       'error': '#F65B2A',
       'text': '#212121',
-      'text2': '#9A9A9A'
+      'text2': '#9A9A9A',
+      'list': '#F5F9F9',
     },
     extend: {
       fontFamily: {

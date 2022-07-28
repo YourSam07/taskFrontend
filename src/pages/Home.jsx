@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import pic from "../images/homepage.svg"
 import { BiErrorCircle } from 'react-icons/bi'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
+import { useDispatch } from 'react-redux'
+import {login as loginAction} from "../actions/userActions"
 
 const Home = () => {
+  const dispatch = useDispatch()
   const [login, setLogin] = useState(true)
   const [signUp, setSignUp] = useState(false)
   const [seepass, setSeePass] = useState(false)
@@ -12,6 +15,10 @@ const Home = () => {
     fullName: '',
     email: '',
     password: '',
+  })
+  const [logincred,  setLoginCred] = useState({
+    email: '',
+    pass: '',
   })
 
   const click = (type) => {
@@ -28,6 +35,11 @@ const Home = () => {
   const seePassword = () => {
     setPassType(!passType)
     setSeePass(!seepass)
+  }
+
+  const loginhandler = (e) => {
+    e.preventDefault()
+    dispatch(loginAction("test", "test"))
   }
   return (
     <div className="container px-2 min-h-screen min-w-full flex items-center justify-center">
@@ -62,7 +74,7 @@ const Home = () => {
                     <div className="passicon absolute cursor-pointer top-[35%] left-[92%]" onClick={seePassword}>{seepass ? <AiFillEyeInvisible fill='#B7C0C9' /> : <AiFillEye fill='#B7C0C9' />}</div>
                   </div>
                   <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span> Please Enter Valid email</span></div>
-                  <button type='submit' className='p-2 rounded-md bg-green hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Log In</button>
+                  <button onClick={(e) => loginhandler(e)}  className='p-2 rounded-md bg-green hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Log In</button>
                   <div className='my-2 flex gap-2 text-sm'><input type="checkbox" name="" id="" className='accent-green' /> Remember Me</div>
                 </form> :
                 <form className='flex flex-col'>
