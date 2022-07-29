@@ -84,8 +84,6 @@ const getUserData = asyncHandler(async (req, res) => {
     })
 })
 
-
-
 module.exports = {
     registerUser,
     loginrUser,
