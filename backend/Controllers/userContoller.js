@@ -57,6 +57,11 @@ const loginrUser = asyncHandler(async (req, res) => {
     // Check for User email
     const user = await User.findOne({ email })
 
+    if(!email && !password){
+        res.status(400)
+        throw new Error('Please enter your email and password')
+    }
+
     if (user && password === user.password) {
         res.json({
             _id: user.id,
