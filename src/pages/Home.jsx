@@ -1,25 +1,32 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import pic from "../images/homepage.svg"
 import { BiErrorCircle } from 'react-icons/bi'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../contexts/userContext';
 
 const Home = () => {
+  const navigate = useNavigate()
   const [login, setLogin] = useState(true)
   const [signUp, setSignUp] = useState(false)
   const [seepass, setSeePass] = useState(false)
   const [passType, setPassType] = useState(false)
+  const [errMsg, setErrMsg] = useState()
+  const [{setCurrentUser}] = useContext(UserContext)
   const [user, setUser] = useState({
-    rememberMe: false,
-    fullName: '',
+    rememberMe: "false",
+    name: '',
     email: '',
     password: '',
   })
   const [logincred, setLoginCred] = useState({
     email: '',
-    pass: '',
+    password: '',
   })
 
   const click = (type) => {
+    setErrMsg(null)
     if (type === "log") {
       setLogin(true)
       setSignUp(false)
@@ -35,16 +42,40 @@ const Home = () => {
     setSeePass(!seepass)
   }
 
-  const loginhandler = async(e) => {
+  const loginhandler = async (e) => {
     e.preventDefault()
-
+    const jsonData = JSON.stringify(logincred)
+    console.log(jsonData)
+    try {
+      const res = await axios.post('http://localhost:7878/api/user/login', jsonData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      setCurrentUser({name: res.data.name, isloggedin: true})
+      navigate('/dashboard')
+    } catch (error) {
+      setErrMsg(error.response.data.message)
+    }
   }
 
-  const signupHandler = (e) => {
+  const signupHandler = async (e) => {
     e.preventDefault()
-    console.log(user)
-    
-
+    const jsonData = JSON.stringify(user)
+    try {
+      const response = await axios.post('http://localhost:7878/api/user', jsonData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      console.log(response)
+      setSignUp(false)
+      setLogin(true)
+      setErrMsg(null)
+    } catch (error) {
+      console.log(error.response.data.message)
+      setErrMsg(error.response.data.message)
+    }
   }
   return (
     <div className="container px-2 min-h-screen min-w-full flex items-center justify-center">
@@ -73,25 +104,25 @@ const Home = () => {
 
               {login ?
                 <form className='flex flex-col'>
-                  <input type="text" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setLoginCred({ email: e.target.value })} />
+                  <input type="text" name="email" placeholder='Email' style={{ borderColor: errMsg ? '#F65B2A' : '#CBDBEA' }} className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setLoginCred({ ...logincred, email: e.target.value })} />
                   <div className="pass-wrapper relative">
-                    <input type={passType ? 'text ' : 'password'} name="pwd" placeholder='Password' className='text-dark-blue relative my-2 px-4 py-2 rounded-md border w-full border-border placeholder:text-ph' onChange={(e) => setLoginCred({ pass: e.target.value })}/>
+                    <input type={passType ? 'text ' : 'password'} style={{ borderColor: errMsg ? '#F65B2A' : '#CBDBEA' }} name="pwd" placeholder='Password' className='text-dark-blue relative my-2 px-4 py-2 rounded-md border w-full border-border placeholder:text-ph' onChange={(e) => setLoginCred({ ...logincred, password: e.target.value })} />
                     <div className="passicon absolute cursor-pointer top-[35%] left-[92%]" onClick={seePassword}>{seepass ? <AiFillEyeInvisible fill='#B7C0C9' /> : <AiFillEye fill='#B7C0C9' />}</div>
                   </div>
-                  <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span> Please Enter Valid email</span></div>
+                  {errMsg ? <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span>{errMsg}</span></div> : null}
                   <button onClick={(e) => loginhandler(e)} className='p-2 rounded-md bg-green hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Log In</button>
                   <div className='my-2 flex gap-2 text-sm'><input type="checkbox" name="" id="" className='accent-green' /> Remember Me</div>
                 </form> :
                 <form className='flex flex-col'>
-                  <input type="text" name="username" placeholder='Full Name' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, fullName: e.target.value })} />
-                  <input type="text" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, email: e.target.value })} />
+                  <input type="text" name="username" placeholder='Full Name' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, name: e.target.value })} />
+                  <input type="email" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border placeholder:text-ph' style={{ borderColor: errMsg ? '#F65B2A' : '#CBDBEA' }} onChange={(e) => setUser({ ...user, email: e.target.value })} />
                   <div className="pass-wrapper relative">
                     <input type={passType ? 'text ' : 'password'} name="pwd" placeholder='Password' className=' text-dark-blue my-2 px-4 py-2 w-full rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, password: e.target.value })} />
                     <div className="passicon absolute cursor-pointer top-[35%] left-[92%]" onClick={seePassword}>{seepass ? <AiFillEyeInvisible fill='#B7C0C9' /> : <AiFillEye fill='#B7C0C9' />}</div>
                   </div>
-                  <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span> Please Enter Valid email</span></div>
+                  {errMsg ? <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span>{errMsg}</span></div> : null}
                   <button onClick={(e) => signupHandler(e)} className='p-2 rounded-md bg-green  hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Sign Up</button>
-                  <div className='my-2 flex gap-2 text-sm'><input type="checkbox" value="rememberMe" className='accent-green' onChange={(e) => setUser({ ...user, rememberMe: e.target.checked ? true : false })} /> Remember Me</div>
+                  <div className='my-2 flex gap-2 text-sm'><input type="checkbox" value="rememberMe" className='accent-green' onChange={(e) => setUser({ ...user, rememberMe: e.target.checked ? "true" : "false" })} /> Remember Me</div>
                 </form>}
             </div>
           </div>

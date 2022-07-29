@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { RiSearchLine } from "react-icons/ri"
+import { UserContext } from '../contexts/userContext'
 
 const DashHead = () => {
+  const [{currentUser}] =useContext(UserContext)
   return (
     <div className='flex items-center justify-between w-full bg-slate-600'>
       <div className="search relative w-1/4">
@@ -10,7 +12,7 @@ const DashHead = () => {
       </div>
       <div className='w-1/4'></div>
       <div className='w-1/4 flex items-center gap-4 justify-end'>
-        <div className="text-text">Hi Saundarya</div>
+        <div className="text-text">Hi {currentUser.name}</div>
         <div className='rounded-full bg-error h-9 w-9'>
           <img src="" alt="" />
         </div>
