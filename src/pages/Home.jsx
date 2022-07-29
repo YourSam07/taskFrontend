@@ -47,7 +47,7 @@ const Home = () => {
     const jsonData = JSON.stringify(logincred)
     console.log(jsonData)
     try {
-      const res = await axios.post('http://localhost:7878/api/user/login', jsonData, {
+      const res = await axios.post('https://task-backend-youshd.herokuapp.com/api/user/login', jsonData, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -63,7 +63,7 @@ const Home = () => {
     e.preventDefault()
     const jsonData = JSON.stringify(user)
     try {
-      const response = await axios.post('http://localhost:7878/api/user', jsonData, {
+      const response = await axios.post('https://task-backend-youshd.herokuapp.com/api/user/signup', jsonData, {
         headers: {
           'Content-Type': 'application/json'
         }
