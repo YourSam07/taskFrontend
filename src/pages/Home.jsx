@@ -2,21 +2,19 @@ import React, { useState } from 'react'
 import pic from "../images/homepage.svg"
 import { BiErrorCircle } from 'react-icons/bi'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
-import { useDispatch } from 'react-redux'
-import {login as loginAction} from "../actions/userActions"
 
 const Home = () => {
-  const dispatch = useDispatch()
   const [login, setLogin] = useState(true)
   const [signUp, setSignUp] = useState(false)
   const [seepass, setSeePass] = useState(false)
   const [passType, setPassType] = useState(false)
   const [user, setUser] = useState({
+    rememberMe: false,
     fullName: '',
     email: '',
     password: '',
   })
-  const [logincred,  setLoginCred] = useState({
+  const [logincred, setLoginCred] = useState({
     email: '',
     pass: '',
   })
@@ -37,9 +35,16 @@ const Home = () => {
     setSeePass(!seepass)
   }
 
-  const loginhandler = (e) => {
+  const loginhandler = async(e) => {
     e.preventDefault()
-    dispatch(loginAction("test", "test"))
+
+  }
+
+  const signupHandler = (e) => {
+    e.preventDefault()
+    console.log(user)
+    
+
   }
   return (
     <div className="container px-2 min-h-screen min-w-full flex items-center justify-center">
@@ -68,25 +73,25 @@ const Home = () => {
 
               {login ?
                 <form className='flex flex-col'>
-                  <input type="text" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' />
+                  <input type="text" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setLoginCred({ email: e.target.value })} />
                   <div className="pass-wrapper relative">
-                    <input type={passType ? 'text ' : 'password'} name="pwd" placeholder='Password' className='text-dark-blue relative my-2 px-4 py-2 rounded-md border w-full border-border placeholder:text-ph' />
+                    <input type={passType ? 'text ' : 'password'} name="pwd" placeholder='Password' className='text-dark-blue relative my-2 px-4 py-2 rounded-md border w-full border-border placeholder:text-ph' onChange={(e) => setLoginCred({ pass: e.target.value })}/>
                     <div className="passicon absolute cursor-pointer top-[35%] left-[92%]" onClick={seePassword}>{seepass ? <AiFillEyeInvisible fill='#B7C0C9' /> : <AiFillEye fill='#B7C0C9' />}</div>
                   </div>
                   <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span> Please Enter Valid email</span></div>
-                  <button onClick={(e) => loginhandler(e)}  className='p-2 rounded-md bg-green hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Log In</button>
+                  <button onClick={(e) => loginhandler(e)} className='p-2 rounded-md bg-green hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Log In</button>
                   <div className='my-2 flex gap-2 text-sm'><input type="checkbox" name="" id="" className='accent-green' /> Remember Me</div>
                 </form> :
                 <form className='flex flex-col'>
-                  <input type="text" name="username" placeholder='Full Name' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, fullname: e.target.value })} />
+                  <input type="text" name="username" placeholder='Full Name' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, fullName: e.target.value })} />
                   <input type="text" name="email" placeholder='Email' className='text-dark-blue my-2 px-4 py-2 rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, email: e.target.value })} />
                   <div className="pass-wrapper relative">
                     <input type={passType ? 'text ' : 'password'} name="pwd" placeholder='Password' className=' text-dark-blue my-2 px-4 py-2 w-full rounded-md border border-border placeholder:text-ph' onChange={(e) => setUser({ ...user, password: e.target.value })} />
                     <div className="passicon absolute cursor-pointer top-[35%] left-[92%]" onClick={seePassword}>{seepass ? <AiFillEyeInvisible fill='#B7C0C9' /> : <AiFillEye fill='#B7C0C9' />}</div>
                   </div>
                   <div className="error flex items-center justify-center gap-2 text-error"><BiErrorCircle fill='#F65B2A' /><span> Please Enter Valid email</span></div>
-                  <button type='submit' className='p-2 rounded-md bg-green  hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Sign Up</button>
-                  <div className='my-2 flex gap-2 text-sm'><input type="checkbox" name="" id="" className='accent-green' /> Remember Me</div>
+                  <button onClick={(e) => signupHandler(e)} className='p-2 rounded-md bg-green  hover:bg-hovgreen w-full text-[#ffffff] text-lg my-2'>Sign Up</button>
+                  <div className='my-2 flex gap-2 text-sm'><input type="checkbox" value="rememberMe" className='accent-green' onChange={(e) => setUser({ ...user, rememberMe: e.target.checked ? true : false })} /> Remember Me</div>
                 </form>}
             </div>
           </div>

@@ -6,35 +6,38 @@ import { BsCalendarDate, BsChatSquareFill } from "react-icons/bs"
 import { FiLogOut } from "react-icons/fi"
 
 const SideMenuBar = () => {
-  const [options, setOptions] = useState([{
+  const data = [{
+    active: false,
     icon: <MdHomeFilled fill='#9A9A9A' size='30px' />,
     fname: 'Overview',
-    active: false
-  }, {
+   }, {
     icon: <ImStatsBars fill='#9A9A9A' size='30px' />,
     fname: 'Stats',
-    active: false
+    active: false,
   }, {
     icon: <FaRegFolderOpen fill='#9A9A9A' size='30px' />,
     fname: 'Projects',
-    active: true
+    active: true,
   }, {
     icon: <BsChatSquareFill fill='#9A9A9A' size='30px' />,
     fname: 'Chat',
-    active: false
+    active: false,
   }, {
     icon: <BsCalendarDate fill='#9A9A9A' size='30px' />,
     fname: 'Calendar',
-    active: false
-  },])
-  const makeActive = (opt) => {
-    options.map(item => {
+    active: false,
+  },]
+  const [options, setOptions] = useState(data)
+  const makeActive = (opt) => {  
+    const newState = options.map(item => {
       if (item.fname === opt){
-        setOptions((prev) => [...prev, {active: true}])
+        return {...item, active: true}
       } else {
-        setOptions((prev) => [...prev, {active: false}])
+        return {...item, active: false}
       }
     })
+    setOptions(newState)
+    console.log(options)
   }
 
   return (
